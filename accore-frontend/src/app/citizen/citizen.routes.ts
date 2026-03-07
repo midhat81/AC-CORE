@@ -1,9 +1,19 @@
 import { Routes } from '@angular/router';
+import { Home } from './home/home';
+import { Login } from './login/login';
+import { Signup } from './signup/signup';
 
 export const CITIZEN_ROUTES: Routes = [
   {
     path: '',
-    // This will eventually load the main map and reporting form interface.
-    // loadComponent: () => import('./citizen-dashboard/citizen-dashboard.component').then(c => c.CitizenDashboardComponent)
+    component: Home
+  },
+  {
+    path: 'login',
+    component: Login
+  },
+  {
+    path: 'signup',
+    component: Signup
   }
 ];

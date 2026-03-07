@@ -1,0 +1,28 @@
+<nav class="flex items-center justify-between w-full p-4 bg-white border-b border-gray-200">
+  <a routerLink="/" class="flex items-center gap-2">
+    <span class="text-xl font-bold text-red-800">AC-CORE</span>
+  </a>
+
+  <div class="flex items-center gap-4">
+    <a routerLink="/login" class="text-sm font-medium text-gray-600 hover:text-red-700 transition-colors">Login</a>
+    <a routerLink="/signup" hlmBtn class="bg-red-700 hover:bg-red-800 text-white">Sign Up</a>
+  </div>
+</nav>
+
+<main class="flex flex-col items-center justify-center min-h-[calc(100vh-73px)] p-6 text-center bg-gray-50">
+  <h1 class="text-4xl md:text-6xl font-extrabold text-gray-900 tracking-tight max-w-3xl">
+    Empowering Angeles City Through <span class="text-red-700">Smart Maintenance</span>
+  </h1>
+  <p class="mt-6 text-lg md:text-xl text-gray-600 max-w-2xl">
+    Report potholes, clogged drains, and other micro-infrastructure hazards instantly. Help us keep our barangays safe and flood-free.
+  </p>
+  
+  <div class="flex gap-4 mt-10">
+    <a routerLink="/report" hlmBtn size="lg" class="bg-red-700 hover:bg-red-800 text-white">
+      Report an Issue Now
+    </a>
+    <a routerLink="/login" hlmBtn variant="outline" size="lg" class="text-red-700 border-red-700 hover:bg-red-50">
+      Track My Reports
+    </a>
+  </div>
+</main>

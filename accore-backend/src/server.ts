@@ -5,6 +5,7 @@ import connectDB from './config/db';
 import connectCloudinary from './config/cloudinary';
 import hazardReportRoutes from './routes/hazard-report.routes';
 import uploadRoutes from './routes/upload.routes';
+import authRoutes from './routes/auth.routes';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -27,3 +28,4 @@ app.listen(PORT, () => {
 
 app.use('/api/reports', hazardReportRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/auth', authRoutes);

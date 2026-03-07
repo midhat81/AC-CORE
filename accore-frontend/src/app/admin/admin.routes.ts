@@ -1,9 +1,21 @@
 import { Routes } from '@angular/router';
+import { AdminDashboard } from './admin-dashboard/admin-dashboard';
+import { Login } from './login/login';
+import { authGuard } from '../shared/auth.guard';
 
 export const ADMIN_ROUTES: Routes = [
   {
+    path: 'login',
+    component: Login
+  },
+  {
+    path: 'dashboard',
+    component: AdminDashboard,
+    canActivate: [authGuard]
+  },
+  {
     path: '',
-    // This will eventually load the secure LGU dashboard.
-    // loadComponent: () => import('./admin-dashboard/admin-dashboard.component').then(c => c.AdminDashboardComponent)
+    redirectTo: 'login',
+    pathMatch: 'full'
   }
 ];

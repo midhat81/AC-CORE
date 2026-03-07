@@ -1,0 +1,30 @@
+<div class="min-h-screen bg-gray-100 p-4 md:p-8">
+  <div class="max-w-7xl mx-auto bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
+    
+    <header class="flex justify-between items-center p-6 border-b border-gray-200 bg-red-800 text-white">
+      <div class="flex items-center gap-4">
+        <div>
+          <h1 class="text-xl md:text-2xl font-bold">LGU Command Center</h1>
+          <p class="text-sm text-red-200 hidden md:block">Angeles City Municipal Maintenance</p>
+        </div>
+      </div>
+      
+      <button 
+        hlmBtn 
+        variant="outline" 
+        class="text-black bg-white hover:bg-gray-100 border-transparent" 
+        (click)="onLogout()"
+      >
+        Logout
+      </button>
+    </header>
+    
+    <main class="p-6 min-h-[500px]">
+      <h2 class="text-xl font-semibold text-gray-800 mb-4">Dashboard Overview</h2>
+      <p class="text-gray-600">
+        Welcome to the secure administrative area. Your token is active.
+      </p>
+    </main>
+
+  </div>
+</div>
