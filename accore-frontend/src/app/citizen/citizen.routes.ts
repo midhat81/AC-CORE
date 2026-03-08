@@ -3,6 +3,7 @@ import { Home } from './home/home';
 import { Login } from './login/login';
 import { Signup } from './signup/signup';
 import { Dashboard } from './dashboard/dashboard';
+import { Report } from './report/report';
 import { authGuard } from '../shared/auth.guard'; 
 
 export const CITIZEN_ROUTES: Routes = [
@@ -19,7 +20,10 @@ export const CITIZEN_ROUTES: Routes = [
     component: Signup
   },
   {
-    // The new secure route
+    path: 'report',
+    component: Report
+  },
+  {
     path: 'dashboard',
     component: Dashboard,
     canActivate: [authGuard]
