@@ -11,6 +11,7 @@
   "private": true,
   "packageManager": "npm@11.8.0",
   "dependencies": {
+    "@abacritt/angularx-social-login": "^2.4.0",
     "@angular/cdk": "21.0.0",
     "@angular/common": "^21.2.0",
     "@angular/compiler": "^21.2.0",
@@ -22,6 +23,7 @@
     "browser-image-compression": "^2.0.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "jwt-decode": "^4.0.0",
     "leaflet": "^1.9.4",
     "leaflet.markercluster": "^1.5.3",
     "lucide-angular": "^0.577.0",

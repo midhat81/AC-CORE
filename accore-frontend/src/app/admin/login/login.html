@@ -1,50 +1,55 @@
 <main class="flex items-center justify-center min-h-screen bg-gray-50 p-4">
   <div class="w-full max-w-md p-8 space-y-6 bg-white rounded-xl shadow-md border border-gray-200">
-    
     <div class="flex flex-col items-center text-center">
-      <img 
-        src="assets/favicon.ico" 
-        alt="AC-CORE Angeles City Municipal Maintenance Official Logo" 
+      <img
+        src="assets/favicon.ico"
+        alt="AC-CORE Angeles City Municipal Maintenance Official Logo"
         class="w-12 h-12 object-contain mb-4"
-      >
+      />
       <h1 class="text-2xl font-bold text-gray-900">Admin Command Center</h1>
       <p class="text-sm text-gray-500 mt-2">Sign in to access the secure LGU dashboard</p>
+    </div>
+
+    <div
+      *ngIf="errorMessage()"
+      class="p-3 mb-4 text-sm text-red-700 bg-red-100 rounded-md border border-red-200"
+    >
+      {{ errorMessage() }}
     </div>
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-4">
       <div class="space-y-2">
         <label hlmLabel for="email">Email Address</label>
-        <input 
-          hlmInput 
-          id="email" 
-          type="email" 
-          formControlName="email" 
-          placeholder="admin@angelescity.gov.ph" 
-          class="w-full" 
+        <input
+          hlmInput
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="admin@angelescity.gov.ph"
+          class="w-full"
         />
       </div>
 
       <div class="space-y-2">
         <label hlmLabel for="password">Password</label>
-        <input 
-          hlmInput 
-          id="password" 
-          type="password" 
-          formControlName="password" 
-          placeholder="••••••••" 
-          class="w-full" 
+        <input
+          hlmInput
+          id="password"
+          type="password"
+          formControlName="password"
+          placeholder="••••••••"
+          class="w-full"
         />
       </div>
 
-      <button 
-        hlmBtn 
-        type="submit" 
-        class="w-full bg-red-700 hover:bg-red-800 text-white mt-6 disabled:opacity-50" 
+      <button
+        hlmBtn
+        type="submit"
+        class="w-full bg-red-700 hover:bg-red-800 text-white mt-6 disabled:opacity-50"
         [disabled]="loginForm.invalid"
       >
         Sign In
       </button>
     </form>
-    
   </div>
 </main>

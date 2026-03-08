@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 
-// Lazy loading splits the code into smaller chunks to improve mobile load times.
 export const routes: Routes = [
   {
     path: '',

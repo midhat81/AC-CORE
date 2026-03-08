@@ -6,6 +6,7 @@ import connectCloudinary from './config/cloudinary';
 import hazardReportRoutes from './routes/hazard-report.routes';
 import uploadRoutes from './routes/upload.routes';
 import authRoutes from './routes/auth.routes';
+import citizenAuthRoutes from './routes/citizen-auth.routes';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -21,11 +22,10 @@ app.get('/api/health', (req: Request, res: Response) => {
 });
 
 app.use('/api/reports', hazardReportRoutes);
+app.use('/api/upload', uploadRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/auth/citizen', citizenAuthRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
 });
-
-app.use('/api/reports', hazardReportRoutes);
-app.use('/api/upload', uploadRoutes);
-app.use('/api/auth', authRoutes);
