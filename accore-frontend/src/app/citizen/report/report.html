@@ -12,17 +12,40 @@
     </header>
 
     <main class="p-6">
-      <form [formGroup]="reportForm" (ngSubmit)="onSubmit()" class="space-y-6">
+<form [formGroup]="reportForm" (ngSubmit)="onSubmit()" class="space-y-6">
         
         <div class="space-y-2">
-          <label hlmLabel for="category">Hazard Category</label>
-          <select id="category" formControlName="category" class="flex h-10 w-full rounded-md border border-gray-200 bg-transparent px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-700">
-            <option value="" disabled selected>Select a category</option>
-            <option value="Pothole">Pothole</option>
-            <option value="Clogged Drainage">Clogged Drainage</option>
-            <option value="Broken Streetlight">Broken Streetlight</option>
-            <option value="Other">Other</option>
-          </select>
+          <label hlmLabel for="title">Report Title</label>
+          <input hlmInput id="title" type="text" formControlName="title" placeholder="Brief summary of the issue" class="w-full" />
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="space-y-2">
+            <label hlmLabel for="category">Hazard Category</label>
+            <select id="category" formControlName="category" class="flex h-10 w-full rounded-md border border-gray-200 bg-transparent px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-700">
+              <option value="" disabled selected>Select a category</option>
+              <option value="Pothole">Pothole</option>
+              <option value="Clogged Drain">Clogged Drain</option>
+              <option value="Fallen Tree">Fallen Tree</option>
+              <option value="Streetlight Out">Streetlight Out</option>
+              <option value="Flooding">Flooding</option>
+            </select>
+          </div>
+
+          <div class="space-y-2">
+            <label hlmLabel for="severity">Severity Level</label>
+            <select id="severity" formControlName="severity" class="flex h-10 w-full rounded-md border border-gray-200 bg-transparent px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-700">
+              <option value="" disabled selected>Select severity</option>
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="Critical">Critical</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <label hlmLabel for="barangay">Barangay</label>
+          <input hlmInput id="barangay" type="text" formControlName="barangay" placeholder="e.g., Balibago" class="w-full" />
         </div>
 
         <div class="space-y-2">

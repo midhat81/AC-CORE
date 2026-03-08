@@ -6,7 +6,8 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class HazardReportService {
-  private apiUrl = 'http://localhost:5000/api/hazard-reports';
+  // Update this URL to match your server.ts exactly
+  private apiUrl = 'http://localhost:5000/api/reports';
 
   constructor(private http: HttpClient) {}
 

@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import connectDB from './config/db';
 import connectCloudinary from './config/cloudinary';
@@ -25,6 +25,18 @@ app.use('/api/reports', hazardReportRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/auth/citizen', citizenAuthRoutes);
+
+// Industry standard global error handler
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  console.error('GLOBAL EXPRESS ERROR CAUGHT:', err);
+  res.status(500).json({ message: 'A backend error occurred.', error: err.message });
+});
+
+// Industry standard global error handler to catch silent middleware crashes
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  console.error('SILENT BACKEND CRASH CAUGHT:', err);
+  res.status(500).json({ message: 'A backend error occurred.', error: err.message });
+});
 
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);

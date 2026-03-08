@@ -1,18 +1,52 @@
 import { Request, Response } from 'express';
 import HazardReport from '../models/hazard-report.model';
+import { v2 as cloudinary } from 'cloudinary';
 
-// Creates a new hazard report in the database
 export const createReport = async (req: Request, res: Response): Promise<void> => {
+  console.log('1. Controller reached successfully. Processing image...');
+
   try {
-    const newReport = new HazardReport(req.body);
+    if (!req.file) {
+      console.log('Error: No image file received.');
+      res.status(400).json({ message: 'Image file is required.' });
+      return;
+    }
+
+    const b64 = Buffer.from(req.file.buffer).toString('base64');
+    const dataURI = 'data:' + req.file.mimetype + ';base64,' + b64;
+    
+    console.log('2. Uploading image to Cloudinary...');
+    const uploadResponse = await cloudinary.uploader.upload(dataURI, {
+      folder: 'angeles-fix-it/hazards'
+    });
+
+    console.log('3. Image uploaded. Saving data to MongoDB...');
+    const { title, description, category, severity, barangay, latitude, longitude } = req.body;
+
+    const newReport = new HazardReport({
+      title,
+      description,
+      category,
+      severity,
+      barangay,
+      location: {
+        type: 'Point',
+        coordinates: [parseFloat(longitude), parseFloat(latitude)], 
+      },
+      imageURL: uploadResponse.secure_url,
+      status: 'Reported' 
+    });
+
     const savedReport = await newReport.save();
+    console.log('4. Success! Hazard report saved.');
     res.status(201).json(savedReport);
-  } catch (error) {
-    res.status(500).json({ message: 'Failed to create hazard report', error });
+    
+  } catch (error: any) {
+    console.error('CRITICAL ERROR SAVING REPORT:', error);
+    res.status(500).json({ message: 'Failed to create hazard report', error: error.message });
   }
 };
 
-// Fetches all reports for the Admin Dashboard
 export const getReports = async (req: Request, res: Response): Promise<void> => {
   try {
     const reports = await HazardReport.find().sort({ createdAt: -1 });

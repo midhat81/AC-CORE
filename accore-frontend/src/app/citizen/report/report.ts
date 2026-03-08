@@ -18,7 +18,10 @@ export class Report {
   private hazardReportService = inject(HazardReportService);
 
   reportForm: FormGroup = this.fb.group({
+    title: ['', [Validators.required, Validators.maxLength(100)]],
     category: ['', Validators.required],
+    severity: ['', Validators.required],
+    barangay: ['', Validators.required],
     description: ['', Validators.required],
     latitude: [15.1450], 
     longitude: [120.5887]
@@ -49,7 +52,10 @@ export class Report {
 
     const formData = new FormData();
     formData.append('image', this.selectedFile);
+    formData.append('title', this.reportForm.get('title')?.value);
     formData.append('category', this.reportForm.get('category')?.value);
+    formData.append('severity', this.reportForm.get('severity')?.value);
+    formData.append('barangay', this.reportForm.get('barangay')?.value);
     formData.append('description', this.reportForm.get('description')?.value);
     formData.append('latitude', this.reportForm.get('latitude')?.value);
     formData.append('longitude', this.reportForm.get('longitude')?.value);

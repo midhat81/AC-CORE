@@ -112,7 +112,6 @@
     cursor: pointer;
   }
 
-  /* Optional: Ensure disabled buttons show the correct 'not allowed' cursor */
   button:disabled,
   [type='button']:disabled,
   [type='submit']:disabled {
