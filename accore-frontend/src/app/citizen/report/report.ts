@@ -13,6 +13,7 @@ import { HlmTextareaImports } from '@spartan-ng/helm/textarea';
 import { HlmSpinnerImports } from '@spartan-ng/helm/spinner';
 
 import { HazardReportService } from '../../services/hazard-report';
+import { BarangayService } from '../../services/barangay'; 
 import * as L from 'leaflet';
 
 @Component({
@@ -28,40 +29,67 @@ import * as L from 'leaflet';
     BrnSelectImports,
     HlmSelectImports,
     HlmTextareaImports,
-    HlmSpinnerImports
+    HlmSpinnerImports,
   ],
   templateUrl: './report.html',
 })
 export class Report implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private hazardReportService = inject(HazardReportService);
+  private barangayService = inject(BarangayService); 
 
   private map: L.Map | undefined;
   private marker: L.Marker | undefined;
 
   readonly barangays = [
-    'Agapito del Rosario', 'Amsic', 'Anunas', 'Balibago', 'Capaya', 
-    'Claro M. Recto', 'Cuayan', 'Cutcut', 'Cutud', 'Lourdes North West', 
-    'Lourdes Sur', 'Lourdes Sur East', 'Malabañas', 'Margot', 'Mining', 
-    'Ninoy Aquino', 'Pampang', 'Pandan', 'Pulung Cacutud', 'Pulung Maragul', 
-    'Pulungbulu', 'Salapungan', 'San Jose', 'San Nicolas', 'Santa Teresita', 
-    'Santa Trinidad', 'Santo Cristo', 'Santo Domingo', 'Santo Rosario', 
-    'Sapalibutad', 'Sapangbato', 'Tabun', 'Virgen Delos Remedios'
+    'Agapito del Rosario',
+    'Amsic',
+    'Anunas',
+    'Balibago',
+    'Capaya',
+    'Claro M. Recto',
+    'Cuayan',
+    'Cutcut',
+    'Cutud',
+    'Lourdes North West',
+    'Lourdes Sur',
+    'Lourdes Sur East',
+    'Malabañas',
+    'Margot',
+    'Mining',
+    'Ninoy Aquino',
+    'Pampang',
+    'Pandan',
+    'Pulung Cacutud',
+    'Pulung Maragul',
+    'Pulungbulu',
+    'Salapungan',
+    'San Jose',
+    'San Nicolas',
+    'Santa Teresita',
+    'Santa Trinidad',
+    'Santo Cristo',
+    'Santo Domingo',
+    'Santo Rosario',
+    'Sapalibutad',
+    'Sapangbato',
+    'Tabun',
+    'Virgen Delos Remedios',
   ];
 
   reportForm: FormGroup = this.fb.group({
     title: ['', [Validators.required, Validators.maxLength(100)]],
     category: ['', Validators.required],
     severity: ['', Validators.required],
-    barangay: ['', Validators.required],
+    // The field is locked so users cannot manually select the wrong location
+    barangay: [{ value: '', disabled: true }, Validators.required],
     description: ['', Validators.required],
     latitude: [15.145],
     longitude: [120.5887],
   });
 
   selectedFile: File | null = null;
-  
-  // Converted state to Signals for Zoneless Angular
+
   isSubmitting = signal(false);
   isCompressing = signal(false);
   statusMessage = signal('');
@@ -149,37 +177,57 @@ export class Report implements OnInit, OnDestroy {
       latitude: lat,
       longitude: lng,
     });
+
+    this.barangayService.getNearestBarangay(lng, lat).subscribe({
+      next: (response) => {
+        if (response && response.data && response.data.name) {
+          this.reportForm.patchValue({
+            barangay: response.data.name,
+          });
+          this.statusMessage.set('');
+          this.isError.set(false);
+        }
+      },
+      error: (error) => {
+        this.reportForm.patchValue({
+          barangay: '',
+        });
+
+        this.statusMessage.set(
+          'The selected location is outside Angeles City. Please move the pin.',
+        );
+        this.isError.set(true);
+      },
+    });
   }
 
   async onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const originalFile = input.files[0];
-      
+
       const options = {
         maxSizeMB: 0.5,
         maxWidthOrHeight: 1280,
-        useWebWorker: true 
+        useWebWorker: true,
       };
 
       try {
-        // Trigger UI update using Signals
         this.isCompressing.set(true);
         this.statusMessage.set('Optimizing image...');
 
         const compressedBlob = await imageCompression(originalFile, options);
-        
+
         this.selectedFile = new File([compressedBlob], originalFile.name, {
           type: compressedBlob.type,
           lastModified: Date.now(),
         });
 
-        // Trigger UI update to clear loading state
         this.isCompressing.set(false);
         this.statusMessage.set('');
       } catch (error) {
         console.error('Error compressing image:', error);
-        this.selectedFile = originalFile; 
+        this.selectedFile = originalFile;
         this.isCompressing.set(false);
         this.statusMessage.set('');
       }
@@ -187,6 +235,15 @@ export class Report implements OnInit, OnDestroy {
   }
 
   onSubmit() {
+    // We retrieve the form values first to check the disabled barangay field
+    const formValues = this.reportForm.getRawValue();
+
+    if (!formValues.barangay) {
+      this.statusMessage.set('You cannot submit a report outside Angeles City.');
+      this.isError.set(true);
+      return;
+    }
+
     if (this.reportForm.invalid || !this.selectedFile) {
       this.statusMessage.set('Please fill all required fields and select an image.');
       this.isError.set(true);
@@ -199,13 +256,13 @@ export class Report implements OnInit, OnDestroy {
 
     const formData = new FormData();
     formData.append('image', this.selectedFile);
-    formData.append('title', this.reportForm.get('title')?.value);
-    formData.append('category', this.reportForm.get('category')?.value);
-    formData.append('severity', this.reportForm.get('severity')?.value);
-    formData.append('barangay', this.reportForm.get('barangay')?.value);
-    formData.append('description', this.reportForm.get('description')?.value);
-    formData.append('latitude', this.reportForm.get('latitude')?.value);
-    formData.append('longitude', this.reportForm.get('longitude')?.value);
+    formData.append('title', formValues.title);
+    formData.append('category', formValues.category);
+    formData.append('severity', formValues.severity);
+    formData.append('barangay', formValues.barangay);
+    formData.append('description', formValues.description);
+    formData.append('latitude', formValues.latitude);
+    formData.append('longitude', formValues.longitude);
 
     this.hazardReportService.submitReport(formData).subscribe({
       next: () => {

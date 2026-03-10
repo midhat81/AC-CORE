@@ -7,6 +7,7 @@ import hazardReportRoutes from './routes/hazard-report.routes';
 import uploadRoutes from './routes/upload.routes';
 import authRoutes from './routes/auth.routes';
 import citizenAuthRoutes from './routes/citizen-auth.routes';
+import barangayRoutes from './routes/barangay.routes';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -25,6 +26,8 @@ app.use('/api/reports', hazardReportRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/auth/citizen', citizenAuthRoutes);
+console.log('SUCCESS: The server is reading the new barangay routes!');
+app.use('/api/geospatial', barangayRoutes);
 
 // Industry standard global error handler
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
