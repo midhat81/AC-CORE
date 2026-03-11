@@ -1,0 +1,606 @@
+<div class="reports-page min-h-screen bg-[#0f1729] text-slate-100 font-sans">
+
+    <!-- ═══════════════════════════════════════════════════════════
+         PAGE HEADER
+    ═══════════════════════════════════════════════════════════ -->
+    <div class="border-b border-white/10 bg-[#0f1729]/80 backdrop-blur-sm sticky top-0 z-30">
+      <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <!-- Angeles City seal placeholder -->
+          <div class="w-11 h-11 rounded-full bg-[#1a2744] border-2 border-[#C9A84C]/60 flex items-center justify-center shadow-lg shadow-[#C9A84C]/10">
+            <span class="text-[#C9A84C] text-lg">★</span>
+          </div>
+          <div>
+            <p class="text-[10px] font-semibold tracking-[0.2em] uppercase text-[#C9A84C]/80">
+              City Government of Angeles
+            </p>
+            <h1 class="text-lg font-bold text-white leading-tight">
+              Mayor's Report Generator
+            </h1>
+          </div>
+        </div>
+  
+        <!-- Breadcrumb + user -->
+        <div class="flex items-center gap-6">
+          <nav class="text-xs text-slate-400 hidden sm:flex items-center gap-1.5">
+            <span class="hover:text-slate-200 cursor-pointer">Admin</span>
+            <span class="text-slate-600">/</span>
+            <span class="text-[#C9A84C] font-medium">Reports Generation</span>
+          </nav>
+          <div class="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-full border border-white/10">
+            <div class="w-6 h-6 rounded-full bg-[#C9A84C] flex items-center justify-center text-[10px] font-bold text-[#0f1729]">
+              AR
+            </div>
+            <span class="text-xs text-slate-300 hidden sm:block">Admin Reyes</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- ═══════════════════════════════════════════════════════════
+         TAB NAVIGATION
+    ═══════════════════════════════════════════════════════════ -->
+    <div class="max-w-7xl mx-auto px-6 mt-6">
+      <div class="flex gap-1 bg-white/5 rounded-xl p-1 w-fit border border-white/10">
+        <button
+          (click)="activeTab.set('configure')"
+          [class]="activeTab() === 'configure'
+            ? 'flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-semibold bg-[#C9A84C] text-[#0f1729] shadow-lg shadow-[#C9A84C]/20 transition-all'
+            : 'flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-medium text-slate-400 hover:text-slate-200 transition-colors'"
+        >
+          <ng-icon name="lucideFileText" size="15" />
+          Generate Report
+        </button>
+        <button
+          (click)="activeTab.set('archive')"
+          [class]="activeTab() === 'archive'
+            ? 'flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-semibold bg-[#C9A84C] text-[#0f1729] shadow-lg shadow-[#C9A84C]/20 transition-all'
+            : 'flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-medium text-slate-400 hover:text-slate-200 transition-colors'"
+        >
+          <ng-icon name="lucideArchive" size="15" />
+          Report Archive
+          <span class="bg-white/10 text-slate-300 text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+            {{ archivedReports.length }}
+          </span>
+        </button>
+      </div>
+    </div>
+  
+    <!-- ═══════════════════════════════════════════════════════════
+         GENERATE TAB
+    ═══════════════════════════════════════════════════════════ -->
+    @if (activeTab() === 'configure') {
+      <div class="max-w-7xl mx-auto px-6 py-6 grid grid-cols-1 xl:grid-cols-[420px_1fr] gap-6">
+  
+        <!-- ─── LEFT: Configuration Panel ─────────────────────────── -->
+        <aside class="space-y-5">
+  
+          <!-- Panel header -->
+          <div class="bg-[#131f38] rounded-2xl border border-white/10 p-5">
+            <div class="flex items-center gap-3 mb-5">
+              <div class="w-9 h-9 rounded-lg bg-[#C9A84C]/15 border border-[#C9A84C]/30 flex items-center justify-center">
+                <ng-icon name="lucideFilter" size="16" class="text-[#C9A84C]" />
+              </div>
+              <div>
+                <h2 class="text-sm font-bold text-white">Report Configuration</h2>
+                <p class="text-[11px] text-slate-400">Define scope, period, and parameters</p>
+              </div>
+            </div>
+  
+            <!-- Report Title -->
+            <div class="mb-4">
+              <label class="block text-[11px] font-semibold tracking-wider uppercase text-slate-400 mb-1.5">
+                Report Title
+              </label>
+              <input
+                type="text"
+                [ngModel]="reportTitle()"
+                (ngModelChange)="reportTitle.set($event)"
+                placeholder="e.g. Q1 2026 Hazard Incident Report"
+                class="w-full bg-[#0f1729] border border-white/10 rounded-lg px-3 py-2.5 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-[#C9A84C]/50 focus:ring-1 focus:ring-[#C9A84C]/20 transition-all"
+              />
+            </div>
+  
+            <!-- Prepared By -->
+            <div>
+              <label class="block text-[11px] font-semibold tracking-wider uppercase text-slate-400 mb-1.5">
+                Prepared By
+              </label>
+              <input
+                type="text"
+                [ngModel]="preparedBy()"
+                (ngModelChange)="preparedBy.set($event)"
+                placeholder="Name / Office"
+                class="w-full bg-[#0f1729] border border-white/10 rounded-lg px-3 py-2.5 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-[#C9A84C]/50 focus:ring-1 focus:ring-[#C9A84C]/20 transition-all"
+              />
+            </div>
+          </div>
+  
+          <!-- Date Range Panel -->
+          <div class="bg-[#131f38] rounded-2xl border border-white/10 p-5">
+            <div class="flex items-center gap-2 mb-4">
+              <ng-icon name="lucideCalendar" size="15" class="text-[#C9A84C]" />
+              <h3 class="text-sm font-bold text-white">Date Range</h3>
+            </div>
+  
+            <!-- Presets -->
+            <div class="flex flex-wrap gap-2 mb-4">
+              @for (preset of periodPresets; track preset.label) {
+                <button
+                  (click)="applyPreset(preset)"
+                  [class]="activePreset() === preset.label
+                    ? 'px-3 py-1 rounded-md text-[11px] font-semibold bg-[#C9A84C] text-[#0f1729] transition-all'
+                    : 'px-3 py-1 rounded-md text-[11px] font-medium bg-white/5 text-slate-400 border border-white/10 hover:border-[#C9A84C]/40 hover:text-slate-200 transition-all'"
+                >
+                  {{ preset.label }}
+                </button>
+              }
+            </div>
+  
+            <!-- Custom date inputs -->
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[10px] font-semibold tracking-wider uppercase text-slate-500 mb-1">
+                  From
+                </label>
+                <input
+                  type="date"
+                  [ngModel]="startDate()"
+                  (ngModelChange)="startDate.set($event); activePreset.set('')"
+                  class="w-full bg-[#0f1729] border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-[#C9A84C]/50 focus:ring-1 focus:ring-[#C9A84C]/20 transition-all [color-scheme:dark]"
+                />
+              </div>
+              <div>
+                <label class="block text-[10px] font-semibold tracking-wider uppercase text-slate-500 mb-1">
+                  To
+                </label>
+                <input
+                  type="date"
+                  [ngModel]="endDate()"
+                  (ngModelChange)="endDate.set($event); activePreset.set('')"
+                  class="w-full bg-[#0f1729] border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-[#C9A84C]/50 focus:ring-1 focus:ring-[#C9A84C]/20 transition-all [color-scheme:dark]"
+                />
+              </div>
+            </div>
+          </div>
+  
+          <!-- Hazard Categories Panel -->
+          <div class="bg-[#131f38] rounded-2xl border border-white/10 p-5">
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-2">
+                <ng-icon name="lucideAlertTriangle" size="15" class="text-[#C9A84C]" />
+                <h3 class="text-sm font-bold text-white">Hazard Categories</h3>
+              </div>
+              <span class="text-[10px] font-semibold bg-[#C9A84C]/15 text-[#C9A84C] px-2 py-0.5 rounded-full border border-[#C9A84C]/30">
+                {{ selectedHazardCount() }} selected
+              </span>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              @for (h of hazardCategories; track h.id) {
+                <button
+                  (click)="toggleHazard(h.id)"
+                  class="flex items-center gap-2.5 px-3 py-2.5 rounded-lg border text-left transition-all"
+                  [style.border-color]="isHazardSelected(h.id) ? h.color + '60' : 'rgba(255,255,255,0.08)'"
+                  [style.background]="isHazardSelected(h.id) ? h.color + '18' : 'rgba(255,255,255,0.03)'"
+                >
+                  <span class="text-base leading-none">{{ h.icon }}</span>
+                  <span
+                    class="text-[11px] font-semibold"
+                    [style.color]="isHazardSelected(h.id) ? h.color : '#64748b'"
+                  >
+                    {{ h.label }}
+                  </span>
+                </button>
+              }
+            </div>
+          </div>
+  
+          <!-- Barangay Selector Panel -->
+          <div class="bg-[#131f38] rounded-2xl border border-white/10 p-5">
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-2">
+                <ng-icon name="lucideMapPin" size="15" class="text-[#C9A84C]" />
+                <h3 class="text-sm font-bold text-white">Barangays</h3>
+              </div>
+              <span class="text-[10px] font-semibold bg-white/5 text-slate-400 px-2 py-0.5 rounded-full border border-white/10">
+                {{ barangayLabel() }}
+              </span>
+            </div>
+  
+            <!-- All / Clear buttons -->
+            <div class="flex gap-2 mb-3">
+              <button
+                (click)="selectAllBarangays()"
+                [class]="allBarangays()
+                  ? 'flex-1 py-1.5 rounded-lg text-[11px] font-semibold bg-[#C9A84C]/20 text-[#C9A84C] border border-[#C9A84C]/40 transition-all'
+                  : 'flex-1 py-1.5 rounded-lg text-[11px] font-medium bg-white/5 text-slate-400 border border-white/10 hover:border-white/20 transition-all'"
+              >
+                Select All
+              </button>
+              <button
+                (click)="clearBarangays()"
+                class="flex-1 py-1.5 rounded-lg text-[11px] font-medium bg-white/5 text-slate-400 border border-white/10 hover:border-white/20 transition-all"
+              >
+                Clear
+              </button>
+            </div>
+  
+            <!-- Search -->
+            <div class="relative mb-3">
+              <ng-icon name="lucideSearch" size="13" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+              <input
+                type="text"
+                placeholder="Search barangay..."
+                [ngModel]="barangaySearch()"
+                (ngModelChange)="barangaySearch.set($event)"
+                class="w-full bg-[#0f1729] border border-white/10 rounded-lg pl-8 pr-3 py-2 text-[12px] text-white placeholder:text-slate-600 focus:outline-none focus:border-[#C9A84C]/40 transition-all"
+              />
+            </div>
+  
+            <!-- Barangay list -->
+            <div class="max-h-48 overflow-y-auto space-y-0.5 pr-1 custom-scroll">
+              @for (b of filteredBarangays(); track b) {
+                <button
+                  (click)="toggleBarangay(b)"
+                  class="w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-left transition-all hover:bg-white/5"
+                  [class.bg-white/5]="isBarangaySelected(b)"
+                >
+                  <div
+                    class="w-4 h-4 rounded flex-shrink-0 flex items-center justify-center border transition-all"
+                    [class.bg-[#C9A84C]]="isBarangaySelected(b)"
+                    [class.border-[#C9A84C]]="isBarangaySelected(b)"
+                    [class.border-white/20]="!isBarangaySelected(b)"
+                  >
+                    @if (isBarangaySelected(b)) {
+                      <ng-icon name="lucideCheck" size="10" class="text-[#0f1729]" />
+                    }
+                  </div>
+                  <span
+                    class="text-[12px] transition-colors"
+                    [class.text-white]="isBarangaySelected(b)"
+                    [class.text-slate-400]="!isBarangaySelected(b)"
+                  >
+                    {{ b }}
+                  </span>
+                </button>
+              }
+            </div>
+          </div>
+  
+          <!-- Content Options -->
+          <div class="bg-[#131f38] rounded-2xl border border-white/10 p-5">
+            <div class="flex items-center gap-2 mb-4">
+              <ng-icon name="lucideBarChart2" size="15" class="text-[#C9A84C]" />
+              <h3 class="text-sm font-bold text-white">Report Contents</h3>
+            </div>
+            <div class="space-y-3">
+              @for (opt of [
+                { key: 'summary',  label: 'Executive Summary',      sub: 'KPI stats & overview' },
+                { key: 'charts',   label: 'Incident Charts',         sub: 'Bar & trend graphs' },
+                { key: 'map',      label: 'Hazard Coverage Map',     sub: 'Barangay heat map' }
+              ]; track opt.key) {
+                <label class="flex items-center gap-3 cursor-pointer group">
+                  <div
+                    class="w-5 h-5 rounded flex-shrink-0 flex items-center justify-center border transition-all"
+                    [class.bg-[#C9A84C]]="opt.key === 'summary' ? includeSummary() : opt.key === 'charts' ? includeCharts() : includeMap()"
+                    [class.border-[#C9A84C]]="opt.key === 'summary' ? includeSummary() : opt.key === 'charts' ? includeCharts() : includeMap()"
+                    [class.border-white/20]="!(opt.key === 'summary' ? includeSummary() : opt.key === 'charts' ? includeCharts() : includeMap())"
+                    (click)="opt.key === 'summary' ? includeSummary.set(!includeSummary()) : opt.key === 'charts' ? includeCharts.set(!includeCharts()) : includeMap.set(!includeMap())"
+                  >
+                    @if (opt.key === 'summary' ? includeSummary() : opt.key === 'charts' ? includeCharts() : includeMap()) {
+                      <ng-icon name="lucideCheck" size="11" class="text-[#0f1729]" />
+                    }
+                  </div>
+                  <div>
+                    <p class="text-[12px] font-semibold text-slate-200 group-hover:text-white transition-colors">
+                      {{ opt.label }}
+                    </p>
+                    <p class="text-[10px] text-slate-500">{{ opt.sub }}</p>
+                  </div>
+                </label>
+              }
+            </div>
+          </div>
+  
+          <!-- Generate Button -->
+          <button
+            (click)="generatePDF()"
+            [disabled]="!isFormValid() || isGenerating()"
+            class="w-full relative overflow-hidden flex items-center justify-center gap-3 py-3.5 rounded-xl font-bold text-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+            [class.bg-[#C9A84C]]="isFormValid() && !isGenerating()"
+            [class.text-[#0f1729]]="isFormValid() && !isGenerating()"
+            [class.shadow-lg]="isFormValid() && !isGenerating()"
+            [class.shadow-[#C9A84C]/25]="isFormValid() && !isGenerating()"
+            [class.hover:brightness-110]="isFormValid() && !isGenerating()"
+            [class.bg-slate-700]="!isFormValid() || isGenerating()"
+            [class.text-slate-400]="!isFormValid() || isGenerating()"
+          >
+            @if (isGenerating()) {
+              <span class="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
+              <span>Generating PDF…</span>
+            } @else {
+              <ng-icon name="lucideFileDown" size="17" />
+              <span>Generate Official PDF</span>
+            }
+          </button>
+  
+          <!-- Preview toggle -->
+          <button
+            (click)="showPreview.set(!showPreview())"
+            class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium text-slate-400 border border-white/10 hover:border-white/20 hover:text-slate-200 transition-all"
+          >
+            <ng-icon name="lucideEye" size="15" />
+            {{ showPreview() ? 'Hide' : 'Show' }} Preview
+          </button>
+        </aside>
+  
+        <!-- ─── RIGHT: Report Preview ────────────────────────────── -->
+        <div class="min-w-0">
+          @if (!showPreview()) {
+            <!-- Empty state -->
+            <div class="h-full min-h-[600px] flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-white/10 text-center p-12">
+              <div class="w-16 h-16 rounded-2xl bg-[#C9A84C]/10 border border-[#C9A84C]/20 flex items-center justify-center mb-4">
+                <ng-icon name="lucideFileText" size="28" class="text-[#C9A84C]/60" />
+              </div>
+              <h3 class="text-base font-bold text-slate-300 mb-2">Report Preview</h3>
+              <p class="text-sm text-slate-500 max-w-xs">
+                Configure the parameters on the left, then click
+                <span class="text-[#C9A84C] font-medium">Show Preview</span>
+                to see how the official PDF will look.
+              </p>
+            </div>
+          } @else {
+            <!-- ───────────────────────────────────────────────────────
+                 PDF PREVIEW — This element is captured by html2pdf
+            ────────────────────────────────────────────────────────── -->
+            <div class="bg-white rounded-2xl overflow-hidden shadow-2xl shadow-black/50" #reportPreview>
+  
+              <!-- PDF: Header / Cover -->
+              <div class="pdf-header bg-[#0f1729] px-10 py-8">
+                <div class="flex items-start justify-between">
+                  <div class="flex items-center gap-4">
+                    <!-- City seal -->
+                    <div class="w-16 h-16 rounded-full bg-white/10 border-2 border-[#C9A84C]/60 flex items-center justify-center flex-shrink-0">
+                      <span class="text-[#C9A84C] text-3xl">★</span>
+                    </div>
+                    <div>
+                      <p class="text-[#C9A84C] text-[10px] font-bold tracking-[0.2em] uppercase">
+                        Republic of the Philippines
+                      </p>
+                      <p class="text-white text-[15px] font-bold leading-tight">
+                        City Government of Angeles
+                      </p>
+                      <p class="text-slate-300 text-[11px]">
+                        City Disaster Risk Reduction and Management Office
+                      </p>
+                    </div>
+                  </div>
+                  <div class="text-right">
+                    <div class="inline-block bg-[#C9A84C] text-[#0f1729] text-[10px] font-bold px-3 py-1 rounded tracking-wider uppercase mb-2">
+                      Official Report
+                    </div>
+                    <p class="text-slate-400 text-[10px]">Generated: {{ today }}</p>
+                  </div>
+                </div>
+  
+                <!-- Report Title -->
+                <div class="mt-6 pt-6 border-t border-white/10">
+                  <h2 class="text-white text-2xl font-bold leading-tight">
+                    {{ reportTitle() }}
+                  </h2>
+                  <p class="text-slate-300 text-sm mt-1">
+                    Coverage Period: {{ formatDateRange() }}
+                  </p>
+                </div>
+  
+                <!-- Hazard tags -->
+                <div class="flex flex-wrap gap-2 mt-4">
+                  @for (h of selectedHazardList(); track h.id) {
+                    <span
+                      class="text-[10px] font-semibold px-2.5 py-1 rounded-full border"
+                      [style.color]="h.color"
+                      [style.border-color]="h.color + '50'"
+                      [style.background]="h.color + '20'"
+                    >
+                      {{ h.icon }} {{ h.label }}
+                    </span>
+                  }
+                </div>
+              </div>
+  
+              <!-- PDF: Body -->
+              <div class="bg-[#f8f9fc] px-10 py-8 space-y-8">
+  
+                <!-- Meta info bar -->
+                <div class="flex flex-wrap gap-4 text-xs text-slate-500 border-b border-slate-200 pb-4">
+                  <span><strong class="text-slate-700">Prepared by:</strong> {{ preparedBy() || '—' }}</span>
+                  <span><strong class="text-slate-700">Barangays covered:</strong> {{ barangayLabel() }}</span>
+                  <span><strong class="text-slate-700">Classification:</strong> For Official Use</span>
+                </div>
+  
+                <!-- Executive Summary -->
+                @if (includeSummary()) {
+                  <section>
+                    <h3 class="text-[#0f1729] text-base font-bold mb-4 flex items-center gap-2">
+                      <span class="w-1 h-5 bg-[#C9A84C] rounded-full inline-block"></span>
+                      Executive Summary
+                    </h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                      @for (stat of mockStats; track stat.label) {
+                        <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+                          <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">
+                            {{ stat.label }}
+                          </p>
+                          <p class="text-2xl font-bold text-[#0f1729] mt-1">{{ stat.value }}</p>
+                          @if (stat.delta) {
+                            <p class="text-[10px] font-semibold text-emerald-600 mt-0.5">{{ stat.delta }} vs prev</p>
+                          }
+                        </div>
+                      }
+                    </div>
+                  </section>
+                }
+  
+                <!-- Incident Chart (mock bars) -->
+                @if (includeCharts()) {
+                  <section>
+                    <h3 class="text-[#0f1729] text-base font-bold mb-4 flex items-center gap-2">
+                      <span class="w-1 h-5 bg-[#C9A84C] rounded-full inline-block"></span>
+                      Monthly Incident Breakdown
+                    </h3>
+                    <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
+                      <div class="flex items-end gap-6 h-36">
+                        @for (d of [
+                          {m:'Jan', flood:12, fire:4, typhoon:2},
+                          {m:'Feb', flood:8,  fire:6, typhoon:0},
+                          {m:'Mar', flood:21, fire:3, typhoon:6}
+                        ]; track d.m) {
+                          <div class="flex-1 flex flex-col items-center gap-1">
+                            <div class="w-full flex items-end gap-1 h-28">
+                              <div class="flex-1 rounded-t-sm bg-blue-400" [style.height.%]="(d.flood / 21) * 100"></div>
+                              <div class="flex-1 rounded-t-sm bg-red-400"  [style.height.%]="(d.fire / 21) * 100"></div>
+                              <div class="flex-1 rounded-t-sm bg-cyan-400" [style.height.%]="(d.typhoon / 21) * 100"></div>
+                            </div>
+                            <span class="text-[11px] font-bold text-slate-500">{{ d.m }}</span>
+                          </div>
+                        }
+                        <div class="flex flex-col gap-1.5 pb-6 ml-4">
+                          <div class="flex items-center gap-1.5 text-[10px] text-slate-500">
+                            <span class="w-3 h-3 rounded-sm bg-blue-400 inline-block"></span> Flood
+                          </div>
+                          <div class="flex items-center gap-1.5 text-[10px] text-slate-500">
+                            <span class="w-3 h-3 rounded-sm bg-red-400 inline-block"></span> Fire
+                          </div>
+                          <div class="flex items-center gap-1.5 text-[10px] text-slate-500">
+                            <span class="w-3 h-3 rounded-sm bg-cyan-400 inline-block"></span> Typhoon
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+                }
+  
+                <!-- Incident Table -->
+                <section>
+                  <h3 class="text-[#0f1729] text-base font-bold mb-4 flex items-center gap-2">
+                    <span class="w-1 h-5 bg-[#C9A84C] rounded-full inline-block"></span>
+                    Incident Log
+                  </h3>
+                  <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+                    <table class="w-full text-xs">
+                      <thead>
+                        <tr class="bg-[#0f1729] text-left">
+                          <th class="px-4 py-3 font-semibold text-[#C9A84C] tracking-wider uppercase text-[10px]">Date</th>
+                          <th class="px-4 py-3 font-semibold text-[#C9A84C] tracking-wider uppercase text-[10px]">Barangay</th>
+                          <th class="px-4 py-3 font-semibold text-[#C9A84C] tracking-wider uppercase text-[10px]">Type</th>
+                          <th class="px-4 py-3 font-semibold text-[#C9A84C] tracking-wider uppercase text-[10px]">Severity</th>
+                          <th class="px-4 py-3 font-semibold text-[#C9A84C] tracking-wider uppercase text-[10px] text-right">Affected</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @for (row of mockIncidents; track row.date; let even = $even) {
+                          <tr [class.bg-slate-50]="even">
+                            <td class="px-4 py-3 text-slate-600">{{ row.date }}</td>
+                            <td class="px-4 py-3 font-medium text-slate-800">{{ row.barangay }}</td>
+                            <td class="px-4 py-3 text-slate-600">{{ row.type }}</td>
+                            <td class="px-4 py-3">
+                              <span
+                                class="px-2 py-0.5 rounded-full text-[10px] font-bold"
+                                [class.bg-red-100]="row.severity === 'Critical'"
+                                [class.text-red-700]="row.severity === 'Critical'"
+                                [class.bg-orange-100]="row.severity === 'High'"
+                                [class.text-orange-700]="row.severity === 'High'"
+                                [class.bg-yellow-100]="row.severity === 'Medium'"
+                                [class.text-yellow-700]="row.severity === 'Medium'"
+                              >
+                                {{ row.severity }}
+                              </span>
+                            </td>
+                            <td class="px-4 py-3 text-right font-semibold text-slate-800">
+                              {{ row.affected | number }}
+                            </td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                </section>
+  
+                <!-- PDF Footer -->
+                <div class="pt-4 border-t border-slate-200 flex items-center justify-between text-[10px] text-slate-400">
+                  <span>City Government of Angeles — CDRRMO</span>
+                  <span>CONFIDENTIAL — FOR OFFICIAL USE ONLY</span>
+                  <span>Page 1 of 1</span>
+                </div>
+              </div>
+            </div>
+            <!-- / #reportPreview -->
+          }
+        </div>
+      </div>
+    }
+  
+    <!-- ═══════════════════════════════════════════════════════════
+         ARCHIVE TAB
+    ═══════════════════════════════════════════════════════════ -->
+    @if (activeTab() === 'archive') {
+      <div class="max-w-7xl mx-auto px-6 py-6">
+  
+        <!-- Search bar -->
+        <div class="flex items-center gap-4 mb-6">
+          <div class="relative flex-1 max-w-sm">
+            <ng-icon name="lucideSearch" size="15" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+            <input
+              type="text"
+              placeholder="Search reports…"
+              [ngModel]="archiveSearch()"
+              (ngModelChange)="archiveSearch.set($event)"
+              class="w-full bg-[#131f38] border border-white/10 rounded-xl pl-9 pr-4 py-2.5 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-[#C9A84C]/40 transition-all"
+            />
+          </div>
+          <span class="text-xs text-slate-500">{{ filteredArchive().length }} report(s)</span>
+        </div>
+  
+        <!-- Archive grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          @for (report of filteredArchive(); track report.id) {
+            <div class="bg-[#131f38] rounded-2xl border border-white/10 p-5 hover:border-[#C9A84C]/30 transition-all group">
+              <div class="flex items-start justify-between mb-3">
+                <div class="w-10 h-10 rounded-xl bg-[#C9A84C]/10 border border-[#C9A84C]/20 flex items-center justify-center flex-shrink-0">
+                  <ng-icon name="lucideFileText" size="18" class="text-[#C9A84C]" />
+                </div>
+                <span class="text-[10px] font-semibold bg-white/5 text-slate-400 px-2 py-1 rounded-full border border-white/10">
+                  {{ report.type }}
+                </span>
+              </div>
+              <h4 class="text-sm font-bold text-white leading-snug mb-1 group-hover:text-[#C9A84C] transition-colors">
+                {{ report.title }}
+              </h4>
+              <p class="text-[11px] text-slate-500 mb-3">{{ report.date }} · {{ report.author }}</p>
+              <div class="flex items-center gap-3 text-[10px] text-slate-500 mb-4">
+                <span>{{ report.pages }} pages</span>
+                <span class="w-1 h-1 rounded-full bg-slate-600 inline-block"></span>
+                <span>{{ report.size }}</span>
+              </div>
+              <!-- Hazard tags -->
+              <div class="flex flex-wrap gap-1.5 mb-4">
+                @for (hid of report.hazards; track hid) {
+                  @for (hcat of hazardCategories; track hcat.id) {
+                    @if (hcat.id === hid) {
+                      <span class="text-[9px] font-bold px-1.5 py-0.5 rounded" [style.background]="hcat.color + '25'" [style.color]="hcat.color">
+                        {{ hcat.icon }} {{ hcat.label }}
+                      </span>
+                    }
+                  }
+                }
+              </div>
+              <button class="w-full flex items-center justify-center gap-2 py-2 rounded-lg text-[11px] font-semibold bg-white/5 text-slate-300 border border-white/10 hover:bg-[#C9A84C]/10 hover:text-[#C9A84C] hover:border-[#C9A84C]/30 transition-all">
+                <ng-icon name="lucideDownload" size="13" />
+                Download PDF
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>

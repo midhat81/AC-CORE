@@ -1,0 +1,62 @@
+/* ─────────────────────────────────────────────
+   Custom scrollbar for barangay list
+───────────────────────────────────────────── */
+.custom-scroll::-webkit-scrollbar {
+    width: 4px;
+  }
+  .custom-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scroll::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+  }
+  .custom-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgba(201, 168, 76, 0.4);
+  }
+  
+  /* ─────────────────────────────────────────────
+     Print / PDF styles
+     When window.print() is called, hide the UI
+     shell and only show the report preview.
+  ───────────────────────────────────────────── */
+  @media print {
+    /* Hide everything except the preview element */
+    body > * {
+      display: none !important;
+    }
+  
+    app-reports-generation {
+      display: block !important;
+    }
+  
+    app-reports-generation > * {
+      display: none !important;
+    }
+  
+    /* Only show the preview div */
+    #reportPreview,
+    [class*="pdf-"] {
+      display: block !important;
+    }
+  
+    /* Show the preview root */
+    .reports-page {
+      display: block !important;
+      background: white !important;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+  
+    /* Target the white pdf preview card directly */
+    .reports-page .bg-white.rounded-2xl {
+      display: block !important;
+      box-shadow: none !important;
+      border-radius: 0 !important;
+    }
+  
+    @page {
+      size: A4 portrait;
+      margin: 0;
+    }
+  }
